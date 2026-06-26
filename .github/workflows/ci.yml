@@ -39,16 +39,6 @@ jobs:
             --branch=main \
             --broker-base-url=http://127.0.0.1:9292
      
-      - name: Start OMS Provider Mock (WireMock)
-        run: |
-          docker run -d \
-            --name wiremock-provider \
-            -p 4010:8080 \
-            -v ${{ github.workspace }}/wiremock-mappings:/var/wiremock/mappings \
-            wiremock/wiremock:latest \
-            --verbose
-          sleep 2
-          
       - name: Run Provider Verification
     
         run: |
