@@ -23,18 +23,18 @@ jobs:
           echo "$HOME/pact/bin" >> $GITHUB_PATH
  
       - name: Start Pact Broker
-        working-directory: citesting
+        working-directory:/
         run: |
           docker compose -f src/test/java/com/example/docker/docker-compose.pact-broker.yml down -v
           docker compose -f src/test/java/com/example/docker/docker-compose.pact-broker.yml up -d --wait
  
       - name: Run Consumer Tests & Publish Contracts
-        working-directory: citesting
+        working-directory: /
         run: |
           mvn -Dtest=PosOmsConsumerPactTest test
      
       - name: Consumer Publish Contracts to the Borker
-        working-directory: citesting
+        working-directory: /
         run: |
           pact-broker publish target/pacts \
             --consumer-app-version=${{ github.sha }} \
@@ -42,7 +42,7 @@ jobs:
             --broker-base-url=http://127.0.0.1:9292
      
       - name: Run Provider Verification
-        working-directory: citesting
+        working-directory: /
         run: |
           mvn -Dtest=OmsProviderVerification \
               -Dgit.sha=${{ github.sha }} \
