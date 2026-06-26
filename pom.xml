@@ -12,6 +12,8 @@
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
+        <selenium.version>4.45.0</selenium.version>
+        <selenide.version>7.16.2</selenide.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.jupiter.version>5.11.4</junit.jupiter.version>
         <rest.assured.version>6.0.0</rest.assured.version>
