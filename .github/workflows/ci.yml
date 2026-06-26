@@ -1,0 +1,51 @@
+name: CI
+ 
+on: [push, pull_request]
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+ 
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '22'
+          cache: 'maven'
+ 
+      - name: Install Pact CLI
+        run: |
+          curl -fsSL https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v2.4.5/pact-2.4.5-linux-x86_64.tar.gz | tar xz -C $HOME
+          echo "$HOME/pact/bin" >> $GITHUB_PATH
+ 
+      - name: Start Pact Broker
+        working-directory: citesting
+        run: |
+          docker compose -f src/test/resources/docker-compose.pact-broker.yml down -v
+          docker compose -f src/test/resources/docker-compose.pact-broker.yml up -d --wait
+ 
+      - name: Run Consumer Tests & Publish Contracts
+        working-directory: citesting
+        run: |
+          mvn -Dtest=PosOmsConsumerPactTest test
+     
+      - name: Consumer Publish Contracts to the Borker
+        working-directory: citesting
+        run: |
+          pact-broker publish target/pacts \
+            --consumer-app-version=${{ github.sha }} \
+            --branch=main \
+            --broker-base-url=http://127.0.0.1:9292
+     
+      - name: Run Provider Verification
+        working-directory: citesting
+        run: |
+          mvn -Dtest=OmsProviderVerification \
+              -Dgit.sha=${{ github.sha }} \
+              -Dpactbroker.host=127.0.0.1 \
+              -Dpactbroker.port=9292 \
+              test
