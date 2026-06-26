@@ -45,6 +45,8 @@ jobs:
           mvn -Dtest=OmsProviderVerification \
               -Dgit.sha=${{ github.sha }} \
               -Dpact.broker.url=http://127.0.0.1:9292 \
+              -Dpact.verifier.publishResults=true \
+              -Dpact.provider.branch=main \
               test
 
       - name: Mark Provider as Deployed
