@@ -50,112 +50,47 @@ final class OmsClient {
 
     }
 
-
-
-
-
-
-    CreateOrder createOrder(
-            String sku,
-            int quantity
-    ){
-
-
-
-        String jsonBody =
-                """
-                {
-                  "sku":"%s",
-                  "quantity":%d
-                }
-                """.formatted(
-                        sku,
-                        quantity
-                );
-
-
+    InvalidOrder invalidgetOrder(int id){
 
 
         Response response =
                 given()
                         .baseUri(baseUrl)
-                        .contentType("application/json")
-                        .body(jsonBody)
 
                         .when()
-                        .post("/orders/123");
+                        .get("/orders/" + id);
 
 
-
-
-
-        return new CreateOrder(
+        return new InvalidOrder(
 
                 response.statusCode(),
 
-                response.path("sku"),
-
-                response.path("quantity")
-
+                response.path("message")
         );
 
     }
 
 
-
-
-
-
-
-    Order getInventory(int id){
-
-
-        Response response =
-                given()
-
-                        .baseUri(baseUrl)
-
-                        .when()
-
-                        .get("/Inventory/" + id);
-
-
-
-        return new Order(
-
-                response.statusCode(),
-
-                ((Number) response.path("id")).intValue(),
-
-                response.path("status"),
-
-                ((Number) response.path("total")).doubleValue()
-
-        );
-
+    public record Order(  int statuscode,
+                          int orderId,
+                          String status,
+                          double total) {
     }
 
-
-
-
-
-
-    record Order(
-            int statuscode,
-            int orderId,
-            String status,
-            double total
-    ){}
-
-
-
-
-
-    record CreateOrder(
-            int statuscode,
-            String sku,
-            int quantity
-    ){}
-
-
+    public record InvalidOrder(int statuscode,String error){}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

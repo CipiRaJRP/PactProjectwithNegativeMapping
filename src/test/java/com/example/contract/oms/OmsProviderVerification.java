@@ -24,10 +24,8 @@ import au.com.dius.pact.provider.junitsupport.loader.SelectorBuilder;
  
 @Provider("oms-provider")
 @PactBroker(
-    url = "http://127.0.0.1:9292",
-    enablePendingPacts = "true",
-    providerTags = "main",
-    includeWipPactsSince = "2026-06-26"
+    url = "http://127.0.0.1:9292"
+
 )
 public class OmsProviderVerification {
     @RegisterExtension
@@ -68,27 +66,16 @@ public class OmsProviderVerification {
                     {"id": 123, "status": "CONFIRMED", "total": 12.0}
                 """)));
     }
- 
-    @State("Order created for inventory")
-    void createOrder() {
-        wireMock.stubFor(post(urlEqualTo("/orders/123"))
-            .withHeader("Content-Type", matching("application/json(;.*)?"))
-            .willReturn(aResponse()
-                .withStatus(201)
-                .withHeader("Content-Type", "application/json")
-                .withBody("""
-                    {"quantity": 20, "sku": "SKU-9"}
-                """)));
+
+    @State("Order 9999 does not exists")
+    void isOrderNotExists(){
+         wireMock.stubFor(get(urlEqualTo("/orders/9999"))
+                 .willReturn(aResponse()
+                         .withStatus(404)
+                         .withHeader("Content-Type","application/json")
+                         .withBody("""
+                                 {"message":"Item Not Found"}
+                                 """)));
     }
- 
-    @State("Sku-9 has stock")
-    void getInventory() {
-        wireMock.stubFor(get(urlEqualTo("/Inventory/7"))
-            .willReturn(aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody("""
-                    {"id": 7, "status": "Confirmed", "total": 42}
-                """)));
-    }
+
 }
