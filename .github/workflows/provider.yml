@@ -1,0 +1,48 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '22'
+          cache: 'maven'
+
+      - name: Install Pact CLI
+        run: |
+          curl -fsSL https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v2.4.5/pact-2.4.5-linux-x86_64.tar.gz | tar xz -C $HOME
+          echo "$HOME/pact/bin" >> $GITHUB_PATH
+
+      - name: Run Provider Verification
+        env:
+          PACT_BROKER_URL: ${{ secrets.PACT_BROKER_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+        run: |
+          mvn -Dtest=OmsProviderVerification \
+              -Dgit.sha=${{ github.sha }} \
+              -Dpact.broker.url=$PACT_BROKER_URL \
+              -Dpact.broker.token=$PACT_BROKER_TOKEN \
+              -Dpact.verifier.publishResults=true \
+              -Dpact.provider.branch=main \
+              test
+
+      - name: Mark Provider as Deployed
+        env:
+          PACT_BROKER_URL: ${{ secrets.PACT_BROKER_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+        run: |
+          pact-broker record-deployment \
+            --pacticipant oms-provider \
+            --version=${{ github.sha }} \
+            --environment production \
+            --broker-base-url=$PACT_BROKER_URL \
+            --broker-token=$PACT_BROKER_TOKEN

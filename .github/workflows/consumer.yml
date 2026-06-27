@@ -38,33 +38,8 @@ jobs:
             --branch=main \
             --broker-base-url=$PACT_BROKER_URL \
             --broker-token=$PACT_BROKER_TOKEN
-
-      - name: Run Provider Verification
-        env:
-          PACT_BROKER_URL: ${{ secrets.PACT_BROKER_URL }}
-          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
-        run: |
-          mvn -Dtest=OmsProviderVerification \
-              -Dgit.sha=${{ github.sha }} \
-              -Dpact.broker.url=$PACT_BROKER_URL \
-              -Dpact.broker.token=$PACT_BROKER_TOKEN \
-              -Dpact.verifier.publishResults=true \
-              -Dpact.provider.branch=main \
-              test
-
-      - name: Mark Provider as Deployed
-        env:
-          PACT_BROKER_URL: ${{ secrets.PACT_BROKER_URL }}
-          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
-        run: |
-          pact-broker record-deployment \
-            --pacticipant oms-provider \
-            --version=${{ github.sha }} \
-            --environment production \
-            --broker-base-url=$PACT_BROKER_URL \
-            --broker-token=$PACT_BROKER_TOKEN
-
-      - name: Can I Deploy
+          
+      - name: Can I Deploy (Consumer)
         env:
           PACT_BROKER_URL: ${{ secrets.PACT_BROKER_URL }}
           PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
@@ -75,3 +50,4 @@ jobs:
             --to-environment production \
             --broker-base-url=$PACT_BROKER_URL \
             --broker-token=$PACT_BROKER_TOKEN
+
