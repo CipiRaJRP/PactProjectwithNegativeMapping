@@ -1,6 +1,6 @@
 package com.example.contract.oms;
  
-import au.com.dius.pact.provider.junitsupport.loader.PactBrokerAuth;
+import au.com.dius.pact.provider.junitsupport.loader.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,17 +19,15 @@ import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
-import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
-import au.com.dius.pact.provider.junitsupport.loader.PactBrokerConsumerVersionSelectors;
-import au.com.dius.pact.provider.junitsupport.loader.SelectorBuilder;
- 
-@Provider("oms-provider")
-@PactBroker(
 
-        url = "${pact.broker.url}",
-        authentication = @PactBrokerAuth(token = "${pact.broker.token}")
-
-)
+//@Provider("oms-provider")
+//@PactBroker(
+//
+//        url = "${pact.broker.url}",
+//        authentication = @PactBrokerAuth(token = "${pact.broker.token}")
+//
+//)
+@PactFolder("target/pacts")
 public class OmsProviderVerification {
     @RegisterExtension
     private static final WireMockExtension wireMock =
@@ -77,7 +75,7 @@ public class OmsProviderVerification {
                          .withStatus(404)
                          .withHeader("Content-Type","application/json")
                          .withBody("""
-                                 {"message":"Item Not Found"}
+                                 {"status":"CONFIRMED"}
                                  """)));
     }
 

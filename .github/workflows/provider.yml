@@ -46,3 +46,15 @@ jobs:
             --environment production \
             --broker-base-url=$PACT_BROKER_URL \
             --broker-token=$PACT_BROKER_TOKEN
+
+      - name: Can I Deploy (Provider)
+        env:
+          PACT_BROKER_URL: ${{ secrets.PACT_BROKER_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+        run: |
+          pact-broker can-i-deploy \
+            --pacticipant pos-consumer \
+            --version=${{ github.sha }} \
+            --to-environment production \
+            --broker-base-url=$PACT_BROKER_URL \
+            --broker-token=$PACT_BROKER_TOKEN    
