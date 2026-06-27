@@ -20,14 +20,14 @@ import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvide
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
 
-//@Provider("oms-provider")
-//@PactBroker(
-//
-//        url = "${pact.broker.url}",
-//        authentication = @PactBrokerAuth(token = "${pact.broker.token}")
-//
-//)
-@PactFolder("target/pacts")
+@Provider("oms-provider")
+@PactBroker(
+
+        url = "${pact.broker.url}",
+        authentication = @PactBrokerAuth(token = "${pact.broker.token}")
+
+)
+
 public class OmsProviderVerification {
     @RegisterExtension
     private static final WireMockExtension wireMock =
