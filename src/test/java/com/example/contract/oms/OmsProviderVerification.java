@@ -1,5 +1,6 @@
 package com.example.contract.oms;
  
+import au.com.dius.pact.provider.junitsupport.loader.PactBrokerAuth;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,12 @@ import au.com.dius.pact.provider.junitsupport.loader.PactBrokerConsumerVersionSe
 import au.com.dius.pact.provider.junitsupport.loader.SelectorBuilder;
  
 @Provider("oms-provider")
-@PactBroker
+@PactBroker(
+
+        url = "${pact.broker.url}",
+        authentication = @PactBrokerAuth(token = "${pact.broker.token}")
+
+)
 public class OmsProviderVerification {
     @RegisterExtension
     private static final WireMockExtension wireMock =
