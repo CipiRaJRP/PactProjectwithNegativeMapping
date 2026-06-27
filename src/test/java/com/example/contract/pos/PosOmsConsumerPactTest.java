@@ -129,6 +129,7 @@ class PosOmsConsumerPactTest {
     }
 
 
+
     @Test
     @PactTestFor(pactMethod = "getOrder")
     void testGetOrder(MockServer mockServer) {
