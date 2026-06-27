@@ -75,7 +75,7 @@ public class OmsProviderVerification {
                          .withStatus(404)
                          .withHeader("Content-Type","application/json")
                          .withBody("""
-                                 {"status":"CONFIRMED"}
+                                 {"message":"Item Not Found"}
                                  """)));
     }
 
