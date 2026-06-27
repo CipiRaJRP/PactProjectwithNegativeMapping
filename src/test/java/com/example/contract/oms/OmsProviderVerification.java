@@ -23,10 +23,7 @@ import au.com.dius.pact.provider.junitsupport.loader.PactBrokerConsumerVersionSe
 import au.com.dius.pact.provider.junitsupport.loader.SelectorBuilder;
  
 @Provider("oms-provider")
-@PactBroker(
-    url = "http://127.0.0.1:9292"
-
-)
+@PactBroker
 public class OmsProviderVerification {
     @RegisterExtension
     private static final WireMockExtension wireMock =
